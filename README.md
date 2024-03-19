@@ -55,7 +55,7 @@ Y además debemos implementar la clase ApplicationService de una forma como la s
     
         private static final Logger logger = LoggerFactory.getLogger(ApplicationServiceImpl.class);
     
-        private BotMessageService botMessageService;
+        private BotMessageService dictionariesBotMessageService;
     
         @Override
         public Map<String, CommandHandler> getBotCommands() {
@@ -65,7 +65,7 @@ Y además debemos implementar la clase ApplicationService de una forma como la s
                 if (!message.getChat().getType().equals(BotConstants.TELEGRAM_MESSAGE_TYPE_PRIVATE)) {
                     logger.error("Comando /start enviado en lugar incorrecto por {}", BotMessageUtils.getUserInfo(message.getFrom()));
     
-                    botMessageService.sendMessage(message.getChat().getId(), BotResponseErrorI18n.COMMAND_SHOULD_BE_ON_PRIVATE);
+                    dictionariesBotMessageService.sendMessage(message.getChat().getId(), BotResponseErrorI18n.COMMAND_SHOULD_BE_ON_PRIVATE);
     
                     return;
                 }
@@ -81,7 +81,7 @@ Y además debemos implementar la clase ApplicationService de una forma como la s
                 if (message.getChat().getType().equals(BotConstants.TELEGRAM_MESSAGE_TYPE_PRIVATE)) {
                     logger.error("Comando /create enviado en lugar incorrecto por {}", BotMessageUtils.getUserInfo(message.getFrom()));
     
-                    botMessageService.sendMessage(message.getChat().getId(), BotResponseErrorI18n.COMMAND_SHOULD_BE_ON_GROUP);
+                    dictionariesBotMessageService.sendMessage(message.getChat().getId(), BotResponseErrorI18n.COMMAND_SHOULD_BE_ON_GROUP);
     
                     return;
                 }
@@ -113,15 +113,15 @@ Y además debemos implementar la clase ApplicationService de una forma como la s
                     logger.error(e.getMessage(), e);
                 }
     
-                botMessageService.answerCallbackQuery(callbackQuery.getId());
+                dictionariesBotMessageService.answerCallbackQuery(callbackQuery.getId());
             });
     
             return callbackQueryHandlerMap;
         }
     
         @Autowired
-        public void setBotMessageService(BotMessageService botMessageService) {
-            this.botMessageService = botMessageService;
+        public void setBotMessageService(BotMessageService dictionariesBotMessageService) {
+            this.dictionariesBotMessageService = dictionariesBotMessageService;
         }
 
     }
