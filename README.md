@@ -132,17 +132,6 @@ Además tenemos que tener un fichero de configuración como el siguiente:
     
     server.port=${SERVER_PORT}
     
-    spring.datasource.url=${JDBC_URL}
-    spring.datasource.username=${JDBC_USERNAME}
-    spring.datasource.password=${JDBC_PASSWORD}
-    spring.datasource.driverClassName=${JDBC_DRIVER}
-    
-    spring.jpa.hibernate.ddl-auto=none
-    spring.jpa.open-in-view=false
-    spring.h2.console.enabled=false
-    spring.flyway.baselineOnMigrate=true
-    spring.flyway.locations=classpath:db/migration/${FLYWAY_ENGINE}
-    
     spring.main.allow-circular-references=true
     
     telegram.bot.type=longpolling
