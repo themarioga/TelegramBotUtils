@@ -125,3 +125,43 @@ Y además debemos implementar la clase ApplicationService de una forma como la s
         }
 
     }
+
+Además tenemos que tener un fichero de configuración como el siguiente:
+
+    spring.profiles.active=@spring.profiles.active@
+    
+    server.port=${SERVER_PORT}
+    
+    spring.datasource.url=${JDBC_URL}
+    spring.datasource.username=${JDBC_USERNAME}
+    spring.datasource.password=${JDBC_PASSWORD}
+    spring.datasource.driverClassName=${JDBC_DRIVER}
+    
+    spring.jpa.hibernate.ddl-auto=none
+    spring.jpa.open-in-view=false
+    spring.h2.console.enabled=false
+    spring.flyway.baselineOnMigrate=true
+    spring.flyway.locations=classpath:db/migration/${FLYWAY_ENGINE}
+    
+    spring.main.allow-circular-references=true
+    
+    telegram.bot.type=longpolling
+    
+    example.bot.enabled=${EXAMPLE_BOT_ENABLED}
+    example.bot.token=${EXAMPLE_BOT_TOKEN}
+    example.bot.name=${EXAMPLE_BOT_NAME}
+    example.bot.path=${EXAMPLE_BOT_PATH}
+    example.bot.webhook.url=${EXAMPLE_BOT_WEBHOOK_URL}
+    example.bot.webhook.cert.path=${EXAMPLE_BOT_WEBHOOK_CERT_PATH}
+
+O en caso de que queramos webhooks
+
+    telegram.bot.type=webhook
+    server.ssl.enabled=true
+    server.ssl.key-store=${SERVER_KEYSTORE_FILE}
+    server.ssl.key-store-password=${SERVER_KEYSTORE_PASSWORD}
+    server.ssl.key-alias=${SERVER_KEYSTORE_ALIAS}
+    server.ssl.key-store-type=PKCS12
+    
+    lets-encrypt-helper.domain=${LETS_ENCRYPT_DOMAIN}
+    lets-encrypt-helper.contact=mailto:${LETS_ENCRYPT_EMAIL}
