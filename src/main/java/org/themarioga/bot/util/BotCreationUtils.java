@@ -21,7 +21,7 @@ public class BotCreationUtils {
 	}
 
 	public static LongPollingBotServiceImpl createLongPollingBot(Boolean enabled, String token, String name, TelegramBotsApi telegramBotsApi, ApplicationService applicationService) {
-		logger.info("Iniciando bot longpolling...");
+		logger.info("Iniciando {} longpolling...", name);
 
 		LongPollingBotServiceImpl longPollingBotService = new LongPollingBotServiceImpl(token, name, applicationService);
 
@@ -37,7 +37,7 @@ public class BotCreationUtils {
 	}
 
 	public static WebhookBotServiceImpl createWebhookBot(Boolean enabled, String token, String name, String path, String webhookURL, String webhookCertPath, TelegramBotsApi telegramBotsApi, ApplicationService applicationService) {
-		logger.info("Iniciando bot webhook en la url {}...", webhookURL);
+		logger.info("Iniciando {} webhook en la url {}...", name, webhookURL);
 
 		WebhookBotServiceImpl webhookBotService = new WebhookBotServiceImpl(token, name, path, applicationService);
 
