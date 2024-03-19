@@ -28,6 +28,8 @@ public class BotCreationUtils {
 		if (Boolean.TRUE.equals(enabled)) {
 			try {
 				telegramBotsApi.registerBot(longPollingBotService);
+
+				logger.info("{} iniciado", name);
 			} catch (TelegramApiException e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -52,6 +54,8 @@ public class BotCreationUtils {
 
 			try {
 				telegramBotsApi.registerBot(webhookBotService, webhookBuilder.build());
+
+				logger.info("{} iniciado", name);
 			} catch (TelegramApiException e) {
 				logger.error(e.getMessage(), e);
 			}
