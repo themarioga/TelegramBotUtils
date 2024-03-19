@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ForceReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
@@ -29,6 +30,30 @@ public class BotMessageServiceImpl implements BotMessageService {
 		try {
 			SendMessage sendMessage = new SendMessage(String.valueOf(chatId), text);
 			sendMessage.enableHtml(true);
+			botService.execute(sendMessage);
+		} catch (TelegramApiException e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public void sendMessage(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup) {
+		try {
+			SendMessage sendMessage = new SendMessage(String.valueOf(chatId), text);
+			sendMessage.enableHtml(true);
+			sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+			botService.execute(sendMessage);
+		} catch (TelegramApiException e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public void sendMessageWithForceReply(long chatId, String text) {
+		try {
+			SendMessage sendMessage = new SendMessage(String.valueOf(chatId), text);
+			sendMessage.enableHtml(true);
+			sendMessage.setReplyMarkup(new ForceReplyKeyboard());
 			botService.execute(sendMessage);
 		} catch (TelegramApiException e) {
 			logger.error(e.getMessage(), e);

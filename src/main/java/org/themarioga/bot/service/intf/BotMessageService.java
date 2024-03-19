@@ -8,6 +8,10 @@ public interface BotMessageService {
 
 	void sendMessage(long chatId, String text);
 
+	void sendMessage(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
+
+	void sendMessageWithForceReply(long chatId, String text);
+
 	void sendMessageAsync(long chatId, String text, Callback callback);
 
 	void editMessage(long chatId, int messageId, String text);
