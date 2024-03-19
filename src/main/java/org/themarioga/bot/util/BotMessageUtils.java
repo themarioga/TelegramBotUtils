@@ -21,27 +21,27 @@ public class BotMessageUtils {
 
         if (message.getText() != null && message.getText().startsWith("/")) {
             receivedMessage = message.getText().replace("@" + botUsername, "");
-        } else if (message.isReply()) {
-            if (pendingReplies.containsKey(message.getChatId())) {
+        } else if (message.isReply() && pendingReplies.containsKey(message.getChatId())) {
                 receivedMessage = pendingReplies.get(message.getChatId());
 
                 pendingReplies.remove(message.getChatId());
-            }
         }
+
         return receivedMessage;
     }
 
     public static Command getCommandFromMessage(String message) {
-        String[] receivedMessage = message.split(" ");
+        String[] receivedMessage = message.split("__");
+
         Command command = new Command();
         command.setCommand(receivedMessage[0]);
-        command.setCommandData(receivedMessage.length > 1 ? String.join(" ", Arrays.copyOfRange(receivedMessage, 1, receivedMessage.length)) : null);
+        command.setCommandData(receivedMessage.length > 1 ? receivedMessage[1] : null);
 
         return command;
     }
 
-    public static CallbackQuery getCallbackQueryFromMessageQuery(String messageQuery) {
-        String[] receivedQuery = messageQuery.split("__");
+    public static CallbackQuery getCallbackQueryFromMessageQuery(String query) {
+        String[] receivedQuery = query.split("__");
 
         CallbackQuery callbackQuery = new CallbackQuery();
         callbackQuery.setQuery(receivedQuery[0]);
@@ -73,6 +73,10 @@ public class BotMessageUtils {
         if (StringUtils.hasText(chat.getLastName())) output += " " + chat.getLastName();
         if (StringUtils.hasText(chat.getUserName())) output += " (@" + chat.getUserName() + ")";
         return output;
+    }
+
+    public static String arrayToMessage(String[] array) {
+        return String.join(" ", Arrays.copyOfRange(array, 1, array.length));
     }
 
 }
