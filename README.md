@@ -130,8 +130,6 @@ Además tenemos que tener un fichero de configuración como el siguiente:
 
     spring.profiles.active=@spring.profiles.active@
     
-    server.port=${SERVER_PORT}
-    
     spring.main.allow-circular-references=true
     
     telegram.bot.type=longpolling
@@ -139,13 +137,27 @@ Además tenemos que tener un fichero de configuración como el siguiente:
     example.bot.enabled=${EXAMPLE_BOT_ENABLED}
     example.bot.token=${EXAMPLE_BOT_TOKEN}
     example.bot.name=${EXAMPLE_BOT_NAME}
-    example.bot.path=${EXAMPLE_BOT_PATH}
-    example.bot.webhook.url=${EXAMPLE_BOT_WEBHOOK_URL}
-    example.bot.webhook.cert.path=${EXAMPLE_BOT_WEBHOOK_CERT_PATH}
+    example.bot.path=
+    example.bot.webhook.url=
+    example.bot.webhook.cert.path=
 
 O en caso de que queramos webhooks
 
+    spring.profiles.active=@spring.profiles.active@
+
+    server.port=${SERVER_PORT}
+    
+    spring.main.allow-circular-references=true
+    
     telegram.bot.type=webhook
+    
+    example.bot.enabled=${EXAMPLE_BOT_ENABLED}
+    example.bot.token=${EXAMPLE_BOT_TOKEN}
+    example.bot.name=${EXAMPLE_BOT_NAME}
+    example.bot.path=${EXAMPLE_BOT_PATH}
+    example.bot.webhook.url=${EXAMPLE_BOT_WEBHOOK_URL}
+    example.bot.webhook.cert.path=${EXAMPLE_BOT_WEBHOOK_CERT_PATH}    
+    
     server.ssl.enabled=true
     server.ssl.key-store=${SERVER_KEYSTORE_FILE}
     server.ssl.key-store-password=${SERVER_KEYSTORE_PASSWORD}
