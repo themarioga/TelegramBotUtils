@@ -18,7 +18,7 @@ public class BotConfig {
 
 	@Bean("telegramBotsApiLongPolling")
 	@ConditionalOnMissingBean(TelegramBotsApi.class)
-	@ConditionalOnProperty(prefix = "cclh.bot", name="type", havingValue = "longpolling")
+	@ConditionalOnProperty(prefix = "telegram.bot", name="type", havingValue = "longpolling")
 	public TelegramBotsApi telegramBotsApiLongPolling() throws TelegramApiException {
 		return new TelegramBotsApi(DefaultBotSession.class);
 	}
@@ -26,7 +26,7 @@ public class BotConfig {
 	// Webhook instantiation
 
 	@Bean
-	@ConditionalOnProperty(prefix = "cclh.bot", name="type", havingValue = "webhook")
+	@ConditionalOnProperty(prefix = "telegram.bot", name="type", havingValue = "webhook")
 	public Webhook serverlessWebhook() {
 		return new ServerlessWebhook();
 	}
@@ -34,7 +34,7 @@ public class BotConfig {
 	@Bean("telegramBotsApiWebhook")
 	@DependsOn("serverlessWebhook")
 	@ConditionalOnMissingBean(TelegramBotsApi.class)
-	@ConditionalOnProperty(prefix = "cclh.bot", name="type", havingValue = "webhook")
+	@ConditionalOnProperty(prefix = "telegram.bot", name="type", havingValue = "webhook")
 	public TelegramBotsApi telegramBotsApiWebhook(Webhook webhook) throws TelegramApiException {
 		return new TelegramBotsApi(DefaultBotSession.class, webhook);
 	}

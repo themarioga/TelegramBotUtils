@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException;
 import org.telegram.telegrambots.updatesreceivers.ServerlessWebhook;
 
 @RestController
-@ConditionalOnProperty(prefix = "cclh.bot", name="type", havingValue = "webhook")
+@ConditionalOnProperty(prefix = "telegram.bot", name="type", havingValue = "webhook")
 public class BotWebhookController {
 
 	private static final Logger logger = LoggerFactory.getLogger(BotWebhookController.class);
