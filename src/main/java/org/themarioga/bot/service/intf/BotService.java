@@ -1,31 +1,18 @@
 package org.themarioga.bot.service.intf;
 
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
+
+import java.io.Serializable;
+import java.util.concurrent.CompletableFuture;
 
 public interface BotService {
 
-	void sendMessage(long chatId, String text);
+	<T extends Serializable, Method extends BotApiMethod<T>, Callback extends SentCallback<T>> void executeAsync(Method method, Callback callback) throws TelegramApiException;
 
-	void sendMessageAsync(long chatId, String text, Callback callback);
+	<T extends Serializable, Method extends BotApiMethod<T>> CompletableFuture<T> executeAsync(Method method) throws TelegramApiException;
 
-	void editMessage(long chatId, int messageId, String text);
-
-	void editMessage(long chatId, int messageId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
-
-	void deleteMessage(long chatId, int messageId);
-
-	void answerCallbackQuery(String callbackQueryId);
-
-	void answerCallbackQuery(String callbackQueryId, String text);
-
-	interface Callback {
-
-		void success(BotApiMethod<Message> method, Message response);
-
-		void failure(BotApiMethod<Message> method, Exception e);
-
-	}
+	<T extends Serializable, Method extends BotApiMethod<T>> T execute(Method method) throws TelegramApiException;
 
 }
