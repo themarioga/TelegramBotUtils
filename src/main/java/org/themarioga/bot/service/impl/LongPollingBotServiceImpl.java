@@ -16,21 +16,23 @@ import org.themarioga.bot.service.intf.ApplicationService;
 import org.themarioga.bot.service.intf.BotService;
 import org.themarioga.bot.util.BotMessageUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class LongPollingBotServiceImpl extends TelegramLongPollingBot implements BotService {
 
     private static final Logger logger = LoggerFactory.getLogger(LongPollingBotServiceImpl.class);
 
-    private final String user;
+    private final String botName;
 
 	private final Map<String, CommandHandler> commands;
     private final Map<String, CallbackQueryHandler> callbackQueries;
+	private final Map<Long, String> pendingReplies = new HashMap<>();
 
-    public LongPollingBotServiceImpl(String token, String user, ApplicationService applicationService) {
+    public LongPollingBotServiceImpl(String token, String botName, ApplicationService applicationService) {
         super(token);
 
-        this.user = user;
+        this.botName = botName;
 
 	    commands = applicationService.getBotCommands();
         callbackQueries = applicationService.getCallbackQueries();
@@ -38,22 +40,26 @@ public class LongPollingBotServiceImpl extends TelegramLongPollingBot implements
 
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().getText() != null && update.getMessage().getText().startsWith("/")) {
-            Command command = BotMessageUtils.getCommandFromMessage(update.getMessage().getText().replace("@" + user, ""));
-            CommandHandler commandHandler = commands.get(command.getCommand());
-            if (commandHandler != null) {
-                commandHandler.callback(update.getMessage(), command.getCommandData());
-            } else {
-                logger.error("Comando desconocido {} enviado por {}",
-                        update.getMessage().getText(),
-                        BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+        if (update.hasMessage()) {
+	        String receivedCommand = BotMessageUtils.getReceivedCommand(botName, update.getMessage(), pendingReplies);
 
-	            try {
-		            execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
-	            } catch (TelegramApiException e) {
-		            logger.error("Error al enviar mensaje {}", e.getMessage(), e);
-	            }
-            }
+	        if (receivedCommand != null && !receivedCommand.isBlank()) {
+				Command command = BotMessageUtils.getCommandFromMessage(receivedCommand);
+				CommandHandler commandHandler = commands.get(command.getCommand());
+				if (commandHandler != null) {
+					commandHandler.callback(update.getMessage(), command.getCommandData());
+				} else {
+					logger.error("Comando desconocido {} enviado por {}",
+							update.getMessage().getText(),
+							BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+
+					try {
+						execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
+					} catch (TelegramApiException e) {
+						logger.error("Error al enviar mensaje {}", e.getMessage(), e);
+					}
+				}
+			}
         } else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = BotMessageUtils.getCallbackQueryFromMessageQuery(update.getCallbackQuery().getData());
 
@@ -76,9 +82,17 @@ public class LongPollingBotServiceImpl extends TelegramLongPollingBot implements
         }
     }
 
+	@Override
+	public void setPendingReply(Long userId, String command) {
+		if (pendingReplies.containsKey(userId))
+			throw new UnsupportedOperationException();
+
+		pendingReplies.put(userId, command);
+	}
+
     @Override
     public String getBotUsername() {
-        return user;
+        return botName;
     }
 
 }

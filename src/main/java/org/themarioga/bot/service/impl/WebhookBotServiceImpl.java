@@ -17,23 +17,25 @@ import org.themarioga.bot.service.intf.ApplicationService;
 import org.themarioga.bot.service.intf.BotService;
 import org.themarioga.bot.util.BotMessageUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class WebhookBotServiceImpl extends TelegramWebhookBot implements BotService {
 
     private static final Logger logger = LoggerFactory.getLogger(WebhookBotServiceImpl.class);
 
-    private final String user;
-    private final String path;
+    private final String botName;
+    private final String botPath;
 
 	private final Map<String, CommandHandler> commands;
     private final Map<String, CallbackQueryHandler> callbackQueries;
+    private final Map<Long, String> pendingReplies = new HashMap<>();
 
-    public WebhookBotServiceImpl(String token, String user, String internalPath, ApplicationService applicationService) {
+    public WebhookBotServiceImpl(String token, String botName, String botPath, ApplicationService applicationService) {
         super(token);
 
-        this.user = user;
-        this.path = internalPath;
+        this.botName = botName;
+        this.botPath = botPath;
 
 	    commands = applicationService.getBotCommands();
         callbackQueries = applicationService.getCallbackQueries();
@@ -41,20 +43,24 @@ public class WebhookBotServiceImpl extends TelegramWebhookBot implements BotServ
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        if (update.hasMessage() && update.getMessage().getText() != null && update.getMessage().getText().startsWith("/")) {
-            Command command = BotMessageUtils.getCommandFromMessage(update.getMessage().getText().replace("@" + user, ""));
-            CommandHandler commandHandler = commands.get(command.getCommand());
-            if (commandHandler != null) {
-                commandHandler.callback(update.getMessage(), command.getCommandData());
-            } else {
-                logger.error("Comando desconocido {} enviado por {}",
-                        update.getMessage().getText(),
-                        BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+        if (update.hasMessage()) {
+            String receivedCommand = BotMessageUtils.getReceivedCommand(botName, update.getMessage(), pendingReplies);
 
-                try {
-                    execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
-                } catch (TelegramApiException e) {
-                    logger.error("Error al enviar mensaje {}", e.getMessage(), e);
+            if (receivedCommand != null && !receivedCommand.isBlank()) {
+                Command command = BotMessageUtils.getCommandFromMessage(receivedCommand);
+                CommandHandler commandHandler = commands.get(command.getCommand());
+                if (commandHandler != null) {
+                    commandHandler.callback(update.getMessage(), command.getCommandData());
+                } else {
+                    logger.error("Comando desconocido {} enviado por {}",
+                            update.getMessage().getText(),
+                            BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+
+                    try {
+                        execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
+                    } catch (TelegramApiException e) {
+                        logger.error("Error al enviar mensaje {}", e.getMessage(), e);
+                    }
                 }
             }
         } else if (update.hasCallbackQuery()) {
@@ -82,13 +88,20 @@ public class WebhookBotServiceImpl extends TelegramWebhookBot implements BotServ
     }
 
     @Override
+    public void setPendingReply(Long userId, String command) {
+        if (pendingReplies.containsKey(userId))
+            throw new UnsupportedOperationException();
+
+        pendingReplies.put(userId, command);
+    }
+
+    @Override
     public String getBotUsername() {
-        return user;
+        return botName;
     }
 
     @Override
     public String getBotPath() {
-        return path;
+        return botPath;
     }
-
 }

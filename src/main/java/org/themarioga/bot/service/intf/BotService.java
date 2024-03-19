@@ -15,4 +15,5 @@ public interface BotService {
 
 	<T extends Serializable, Method extends BotApiMethod<T>> T execute(Method method) throws TelegramApiException;
 
+	void setPendingReply(Long userId, String command);
 }
