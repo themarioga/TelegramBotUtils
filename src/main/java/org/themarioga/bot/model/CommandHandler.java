@@ -1,4 +1,4 @@
-package org.themarioga.bot.util;
+package org.themarioga.bot.model;
 
 import org.telegram.telegrambots.meta.api.objects.Message;
 

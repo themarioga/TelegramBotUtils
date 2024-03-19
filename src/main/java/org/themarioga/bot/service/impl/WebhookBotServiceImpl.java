@@ -16,13 +16,14 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 import org.telegram.telegrambots.meta.updateshandlers.SentCallback;
 import org.themarioga.bot.constants.BotResponseErrorI18n;
+import org.themarioga.bot.model.CallbackQuery;
+import org.themarioga.bot.model.Command;
 import org.themarioga.bot.service.intf.ApplicationService;
 import org.themarioga.bot.service.intf.BotService;
-import org.themarioga.bot.util.BotUtils;
-import org.themarioga.bot.util.CallbackQueryHandler;
-import org.themarioga.bot.util.CommandHandler;
+import org.themarioga.bot.util.BotMessageUtils;
+import org.themarioga.bot.model.CallbackQueryHandler;
+import org.themarioga.bot.model.CommandHandler;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class WebhookBotServiceImpl extends TelegramWebhookBot implements BotService {
@@ -48,36 +49,27 @@ public class WebhookBotServiceImpl extends TelegramWebhookBot implements BotServ
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().getText() != null && update.getMessage().getText().startsWith("/")) {
-            String[] command = update.getMessage().getText().replace("@" + user, "").split(" ");
-            CommandHandler commandHandler = commands.get(command[0]);
+            Command command = BotMessageUtils.getCommandFromMessage(update.getMessage().getText().replace("@" + user, ""));
+            CommandHandler commandHandler = commands.get(command.getCommand());
             if (commandHandler != null) {
-                commandHandler.callback(update.getMessage(), command.length > 1 ? String.join(" ", Arrays.copyOfRange(command, 1, command.length)) : null);
+                commandHandler.callback(update.getMessage(), command.getCommandData());
             } else {
                 logger.error("Comando desconocido {} enviado por {}",
                         update.getMessage().getText(),
-                        BotUtils.getUserInfo(update.getMessage().getFrom()));
+                        BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
 
-                sendMessageAsync(update.getMessage().getChatId(), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS, new Callback() {
-                    @Override
-                    public void success(BotApiMethod<Message> method, Message response) {
-                        // Nada
-                    }
-
-                    @Override
-                    public void failure(BotApiMethod<Message> botApiMethod, Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                });
+                sendMessage(update.getMessage().getChatId(), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS);
             }
         } else if (update.hasCallbackQuery()) {
-            String[] query = update.getCallbackQuery().getData().split("__");
-            CallbackQueryHandler callbackQueryHandler = callbackQueries.get(query[0]);
+            CallbackQuery callbackQuery = BotMessageUtils.getCallbackQueryFromMessageQuery(update.getCallbackQuery().getData());
+
+            CallbackQueryHandler callbackQueryHandler = callbackQueries.get(callbackQuery.getQuery());
             if (callbackQueryHandler != null) {
-                callbackQueryHandler.callback(update.getCallbackQuery(), query.length > 1 ? query[1] : null);
+                callbackQueryHandler.callback(update.getCallbackQuery(), callbackQuery.getQueryData());
             } else {
                 logger.error("Querie desconocida {} enviado por {}",
                         update.getCallbackQuery().getData(),
-                        BotUtils.getUserInfo(update.getCallbackQuery().getFrom()));
+                        BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
 
                 answerCallbackQuery(update.getCallbackQuery().getId(), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS);
             }

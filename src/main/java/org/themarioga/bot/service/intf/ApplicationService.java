@@ -1,7 +1,7 @@
 package org.themarioga.bot.service.intf;
 
-import org.themarioga.bot.util.CallbackQueryHandler;
-import org.themarioga.bot.util.CommandHandler;
+import org.themarioga.bot.model.CallbackQueryHandler;
+import org.themarioga.bot.model.CommandHandler;
 
 import java.util.Map;
 
