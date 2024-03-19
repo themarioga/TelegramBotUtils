@@ -31,7 +31,7 @@ public class BotMessageUtils {
     }
 
     public static Command getCommandFromMessage(String message) {
-        String[] receivedMessage = message.split("__");
+        String[] receivedMessage = message.split(" ")[0].split("__");
 
         Command command = new Command();
         command.setCommand(receivedMessage[0]);
