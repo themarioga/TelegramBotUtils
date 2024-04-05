@@ -4,6 +4,7 @@ import org.springframework.util.StringUtils;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
+import org.themarioga.bot.constants.BotConstants;
 import org.themarioga.bot.model.CallbackQuery;
 import org.themarioga.bot.model.Command;
 
@@ -14,6 +15,10 @@ public class BotMessageUtils {
 
     private BotMessageUtils() {
         throw new UnsupportedOperationException();
+    }
+
+    public static boolean isMessagePrivate(Message message) {
+        return message.getChat().getType().equals(BotConstants.TELEGRAM_MESSAGE_TYPE_PRIVATE);
     }
 
     public static String getReceivedCommand(String botUsername, Message message, Map<Long, String> pendingReplies) {

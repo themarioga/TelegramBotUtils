@@ -11,6 +11,8 @@ import org.themarioga.bot.service.impl.WebhookBotServiceImpl;
 import org.themarioga.bot.service.intf.ApplicationService;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BotCreationUtils {
 
@@ -26,13 +28,19 @@ public class BotCreationUtils {
 		LongPollingBotServiceImpl longPollingBotService = new LongPollingBotServiceImpl(token, name, applicationService);
 
 		if (Boolean.TRUE.equals(enabled)) {
-			try {
-				telegramBotsApi.registerBot(longPollingBotService);
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						telegramBotsApi.registerBot(longPollingBotService);
 
-				logger.info("{} iniciado", name);
-			} catch (TelegramApiException e) {
-				logger.error(e.getMessage(), e);
-			}
+						logger.info("{} iniciado", name);
+					} catch (TelegramApiException e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			}, 1000);
 		}
 
 		return longPollingBotService;
@@ -52,13 +60,19 @@ public class BotCreationUtils {
 				webhookBuilder.certificate(certificate);
 			}
 
-			try {
-				telegramBotsApi.registerBot(webhookBotService, webhookBuilder.build());
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try {
+						telegramBotsApi.registerBot(webhookBotService, webhookBuilder.build());
 
-				logger.info("{} iniciado", name);
-			} catch (TelegramApiException e) {
-				logger.error(e.getMessage(), e);
-			}
+						logger.info("{} iniciado", name);
+					} catch (TelegramApiException e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			}, 1000);
 		}
 
 		return webhookBotService;
