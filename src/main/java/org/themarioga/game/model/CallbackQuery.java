@@ -1,4 +1,4 @@
-package org.themarioga.bot.model;
+package org.themarioga.game.model;
 
 public class CallbackQuery {
 

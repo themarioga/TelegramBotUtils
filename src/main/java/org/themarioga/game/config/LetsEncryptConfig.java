@@ -1,4 +1,4 @@
-package org.themarioga.bot.config;
+package org.themarioga.game.config;
 
 import com.github.valb3r.letsencrypthelper.tomcat.TomcatWellKnownLetsEncryptChallengeEndpointConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

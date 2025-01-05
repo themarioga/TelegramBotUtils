@@ -1,12 +1,12 @@
-package org.themarioga.bot.util;
+package org.themarioga.game.util;
 
 import org.springframework.util.StringUtils;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.themarioga.bot.constants.BotConstants;
-import org.themarioga.bot.model.CallbackQuery;
-import org.themarioga.bot.model.Command;
+import org.telegram.telegrambots.meta.api.objects.chat.Chat;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
+import org.themarioga.game.constants.BotConstants;
+import org.themarioga.game.model.CallbackQuery;
+import org.themarioga.game.model.Command;
 
 import java.util.Arrays;
 import java.util.Map;

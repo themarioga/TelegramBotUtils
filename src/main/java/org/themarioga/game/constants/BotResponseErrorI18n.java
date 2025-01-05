@@ -1,4 +1,4 @@
-package org.themarioga.bot.constants;
+package org.themarioga.game.constants;
 
 public class BotResponseErrorI18n {
 

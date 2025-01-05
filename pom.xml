@@ -7,16 +7,17 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.4.1</version>
         <relativePath/>
     </parent>
 
     <groupId>org.themarioga</groupId>
-    <artifactId>CCLH-TelegramBotUtils</artifactId>
+    <artifactId>TelegramBotUtils</artifactId>
     <version>2.0.0</version>
 
     <properties>
         <java.version>17</java.version>
+        <telegrambots.version>8.2.0</telegrambots.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -43,8 +44,18 @@
         <!-- Telegram -->
         <dependency>
             <groupId>org.telegram</groupId>
-            <artifactId>telegrambots</artifactId>
-            <version>6.9.7.1</version>
+            <artifactId>telegrambots-springboot-webhook-starter</artifactId>
+            <version>${telegrambots.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-springboot-longpolling-starter</artifactId>
+            <version>${telegrambots.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots-client</artifactId>
+            <version>${telegrambots.version}</version>
         </dependency>
 
         <!-- Let's Encrypt -->
@@ -78,10 +89,11 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>9.1.0</version>
+                <version>11.1.1</version>
                 <configuration>
                     <failBuildOnCVSS>8</failBuildOnCVSS>
                     <suppressionFile>${project.basedir}/src/main/resources/supressed-cve-exceptions.xml</suppressionFile>
+                    <nvdApiKey>4882e27c-9490-4875-840c-77d13ff8f23f</nvdApiKey>
                 </configuration>
                 <executions>
                     <execution>

@@ -1,4 +1,4 @@
-package org.themarioga.bot.model;
+package org.themarioga.game.model;
 
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
