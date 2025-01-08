@@ -93,7 +93,7 @@
                 <configuration>
                     <failBuildOnCVSS>8</failBuildOnCVSS>
                     <suppressionFile>${project.basedir}/src/main/resources/supressed-cve-exceptions.xml</suppressionFile>
-                    <nvdApiKey>4882e27c-9490-4875-840c-77d13ff8f23f</nvdApiKey>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                 </configuration>
                 <executions>
                     <execution>
