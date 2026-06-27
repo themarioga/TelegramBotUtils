@@ -7,8 +7,8 @@ import java.util.Map;
 
 public interface ApplicationService {
 
-	Map<String, CommandHandler> getBotCommands();
+    Map<String, CommandHandler> getBotCommands();
 
-	Map<String, CallbackQueryHandler> getCallbackQueries();
+    Map<String, CallbackQueryHandler> getCallbackQueries();
 
 }

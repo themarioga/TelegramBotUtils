@@ -28,117 +28,113 @@ public class LongPollingBotServiceImpl implements BotService, SpringLongPollingB
 
     private static final Logger logger = LoggerFactory.getLogger(LongPollingBotServiceImpl.class);
 
-	private final String botToken;
+    private final String botToken;
     private final String botName;
 
-	private final TelegramClient telegramClient;
+    private final TelegramClient telegramClient;
 
-	private final Map<String, CommandHandler> commands;
+    private final Map<String, CommandHandler> commands;
     private final Map<String, CallbackQueryHandler> callbackQueries;
-	private final Map<Long, String> pendingReplies = new HashMap<>();
+    private final Map<Long, String> pendingReplies = new HashMap<>();
 
     public LongPollingBotServiceImpl(String botToken, String botName, ApplicationService applicationService) {
-	    logger.info("Iniciando {} como longpolling...", botName);
+        logger.info("Iniciando {} como longpolling...", botName);
 
-		this.botToken = botToken;
+        this.botToken = botToken;
         this.botName = botName;
 
-	    commands = applicationService.getBotCommands();
+        commands = applicationService.getBotCommands();
         callbackQueries = applicationService.getCallbackQueries();
 
-	    telegramClient = new OkHttpTelegramClient(botToken);
+        telegramClient = new OkHttpTelegramClient(botToken);
     }
 
-	@Override
-	public void consume(Update update) {
-		if (update.hasMessage()) {
-			String receivedCommand = BotMessageUtils.getReceivedCommand(botName, update.getMessage(), pendingReplies);
+    @Override
+    public void consume(Update update) {
+        if (update.hasMessage()) {
+            String receivedCommand = BotMessageUtils.getReceivedCommand(botName, update.getMessage(), pendingReplies);
 
-			if (receivedCommand != null && !receivedCommand.isBlank()) {
-				Command command = BotMessageUtils.getCommandFromMessage(receivedCommand);
-				CommandHandler commandHandler = commands.get(command.getCommand());
-				if (commandHandler != null) {
-					commandHandler.callback(update.getMessage(), command.getCommandData());
-				} else {
-					logger.error("Comando desconocido {} enviado por {}",
-							update.getMessage().getText(),
-							BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+            if (receivedCommand != null && !receivedCommand.isBlank()) {
+                Command command = BotMessageUtils.getCommandFromMessage(receivedCommand);
+                CommandHandler commandHandler = commands.get(command.getCommand());
+                if (commandHandler != null) {
+                    commandHandler.callback(update.getMessage(), command.getCommandData());
+                } else {
+                    logger.error("Comando desconocido {} enviado por {}", update.getMessage().getText(), BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
 
-					try {
-						telegramClient.execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
-					} catch (TelegramApiException e) {
-						logger.error("Error al enviar mensaje {}", e.getMessage(), e);
-					}
-				}
-			}
-		} else if (update.hasCallbackQuery()) {
-			CallbackQuery callbackQuery = BotMessageUtils.getCallbackQueryFromMessageQuery(update.getCallbackQuery().getData());
+                    try {
+                        telegramClient.execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
+                    } catch (TelegramApiException e) {
+                        logger.error("Error al enviar mensaje {}", e.getMessage(), e);
+                    }
+                }
+            }
+        } else if (update.hasCallbackQuery()) {
+            CallbackQuery callbackQuery = BotMessageUtils.getCallbackQueryFromMessageQuery(update.getCallbackQuery().getData());
 
-			CallbackQueryHandler callbackQueryHandler = callbackQueries.get(callbackQuery.getQuery());
-			if (callbackQueryHandler != null) {
-				callbackQueryHandler.callback(update.getCallbackQuery(), callbackQuery.getQueryData());
-			} else {
-				logger.error("Querie desconocida {} enviado por {}",
-						update.getCallbackQuery().getData(),
-						BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
+            CallbackQueryHandler callbackQueryHandler = callbackQueries.get(callbackQuery.getQuery());
+            if (callbackQueryHandler != null) {
+                callbackQueryHandler.callback(update.getCallbackQuery(), callbackQuery.getQueryData());
+            } else {
+                logger.error("Querie desconocida {} enviado por {}", update.getCallbackQuery().getData(), BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
 
-				try {
-					AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery(update.getCallbackQuery().getId());
-					answerCallbackQuery.setText(BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS);
-					telegramClient.execute(answerCallbackQuery);
-				} catch (TelegramApiException e) {
-					logger.error("Error al enviar mensaje {}", e.getMessage(), e);
-				}
-			}
-		}
-	}
+                try {
+                    AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery(update.getCallbackQuery().getId());
+                    answerCallbackQuery.setText(BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS);
+                    telegramClient.execute(answerCallbackQuery);
+                } catch (TelegramApiException e) {
+                    logger.error("Error al enviar mensaje {}", e.getMessage(), e);
+                }
+            }
+        }
+    }
 
-	@Override
-	public LongPollingUpdateConsumer getUpdatesConsumer() {
-		return this;
-	}
+    @Override
+    public LongPollingUpdateConsumer getUpdatesConsumer() {
+        return this;
+    }
 
-	@Override
-	public void setPendingReply(Long userId, String command) {
-		if (pendingReplies.containsKey(userId))
-			throw new UnsupportedOperationException();
+    @Override
+    public void setPendingReply(Long userId, String command) {
+        if (pendingReplies.containsKey(userId))
+            throw new UnsupportedOperationException();
 
-		pendingReplies.put(userId, command);
-	}
+        pendingReplies.put(userId, command);
+    }
 
-	@Override
-	public String getBotToken() {
-		return botToken;
-	}
+    @Override
+    public String getBotToken() {
+        return botToken;
+    }
 
-	@Override
+    @Override
     public String getBotName() {
         return botName;
     }
 
-	@Override
-	public Map<String, CallbackQueryHandler> getCallbackQueries() {
-		return callbackQueries;
-	}
+    @Override
+    public Map<String, CallbackQueryHandler> getCallbackQueries() {
+        return callbackQueries;
+    }
 
-	@Override
-	public Map<String, CommandHandler> getCommands() {
-		return commands;
-	}
+    @Override
+    public Map<String, CommandHandler> getCommands() {
+        return commands;
+    }
 
-	@Override
-	public Map<Long, String> getPendingReplies() {
-		return pendingReplies;
-	}
+    @Override
+    public Map<Long, String> getPendingReplies() {
+        return pendingReplies;
+    }
 
-	@Override
-	public TelegramClient getTelegramClient() {
-		return telegramClient;
-	}
+    @Override
+    public TelegramClient getTelegramClient() {
+        return telegramClient;
+    }
 
-	@Override
-	public SpringLongPollingBot getBean() {
-		return this;
-	}
+    @Override
+    public SpringLongPollingBot getBean() {
+        return this;
+    }
 
 }

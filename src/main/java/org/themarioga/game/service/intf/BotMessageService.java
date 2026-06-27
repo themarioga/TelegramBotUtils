@@ -5,30 +5,30 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 
 public interface BotMessageService {
 
-	void sendMessage(long chatId, String text);
+    void sendMessage(long chatId, String text);
 
-	void sendMessage(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
+    void sendMessage(long chatId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
 
-	void sendMessageAsync(long chatId, String text, Callback callback);
+    void sendMessageAsync(long chatId, String text, Callback callback);
 
-	void editMessage(long chatId, int messageId, String text);
+    void editMessage(long chatId, int messageId, String text);
 
-	void editMessage(long chatId, int messageId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
+    void editMessage(long chatId, int messageId, String text, InlineKeyboardMarkup inlineKeyboardMarkup);
 
-	void deleteMessage(long chatId, int messageId);
+    void deleteMessage(long chatId, int messageId);
 
-	void answerCallbackQuery(String callbackQueryId);
+    void answerCallbackQuery(String callbackQueryId);
 
-	void answerCallbackQuery(String callbackQueryId, String text);
+    void answerCallbackQuery(String callbackQueryId, String text);
 
-	String sanitizeTextFromCommand(String command, String text);
+    String sanitizeTextFromCommand(String command, String text);
 
-	interface Callback {
+    interface Callback {
 
-		void success(Message response);
+        void success(Message response);
 
-		void failure(Throwable e);
+        void failure(Throwable e);
 
-	}
+    }
 
 }

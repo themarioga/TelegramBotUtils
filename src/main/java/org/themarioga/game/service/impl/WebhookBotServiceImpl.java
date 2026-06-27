@@ -32,7 +32,7 @@ public class WebhookBotServiceImpl implements BotService {
 
     private final TelegramClient telegramClient;
 
-	private final Map<String, CommandHandler> commands;
+    private final Map<String, CommandHandler> commands;
     private final Map<String, CallbackQueryHandler> callbackQueries;
     private final Map<Long, String> pendingReplies = new HashMap<>();
 
@@ -44,7 +44,7 @@ public class WebhookBotServiceImpl implements BotService {
         this.botToken = botToken;
         this.botName = botName;
 
-	    commands = applicationService.getBotCommands();
+        commands = applicationService.getBotCommands();
         callbackQueries = applicationService.getCallbackQueries();
 
         telegramClient = new OkHttpTelegramClient(botToken);
@@ -68,9 +68,7 @@ public class WebhookBotServiceImpl implements BotService {
                 if (commandHandler != null) {
                     commandHandler.callback(update.getMessage(), command.getCommandData());
                 } else {
-                    logger.error("Comando desconocido {} enviado por {}",
-                            update.getMessage().getText(),
-                            BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
+                    logger.error("Comando desconocido {} enviado por {}", update.getMessage().getText(), BotMessageUtils.getUserInfo(update.getMessage().getFrom()));
 
                     try {
                         telegramClient.execute(new SendMessage(String.valueOf(update.getMessage().getChatId()), BotResponseErrorI18n.COMMAND_DOES_NOT_EXISTS));
@@ -86,9 +84,7 @@ public class WebhookBotServiceImpl implements BotService {
             if (callbackQueryHandler != null) {
                 callbackQueryHandler.callback(update.getCallbackQuery(), callbackQuery.getQueryData());
             } else {
-                logger.error("Querie desconocida {} enviado por {}",
-                        update.getCallbackQuery().getData(),
-                        BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
+                logger.error("Querie desconocida {} enviado por {}", update.getCallbackQuery().getData(), BotMessageUtils.getUserInfo(update.getCallbackQuery().getFrom()));
 
                 try {
                     AnswerCallbackQuery answerCallbackQuery = new AnswerCallbackQuery(update.getCallbackQuery().getId());

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile("pro")
-@ConditionalOnProperty(prefix = "lets-encrypt-helper", name="enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = "lets-encrypt-helper", name = "enabled", havingValue = "true")
 @Import(TomcatWellKnownLetsEncryptChallengeEndpointConfig.class)
 public class LetsEncryptConfig {
 

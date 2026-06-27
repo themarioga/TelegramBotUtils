@@ -27,9 +27,9 @@ public class BotMessageUtils {
         if (message.getText() != null && message.getText().startsWith("/")) {
             receivedMessage = message.getText().replace("@" + botUsername, "");
         } else if (message.isReply() && pendingReplies.containsKey(message.getChatId())) {
-                receivedMessage = pendingReplies.get(message.getChatId());
+            receivedMessage = pendingReplies.get(message.getChatId());
 
-                pendingReplies.remove(message.getChatId());
+            pendingReplies.remove(message.getChatId());
         }
 
         return receivedMessage;

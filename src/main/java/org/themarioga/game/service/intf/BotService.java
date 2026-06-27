@@ -10,20 +10,20 @@ import java.util.Map;
 
 public interface BotService {
 
-	void setPendingReply(Long userId, String command);
+    void setPendingReply(Long userId, String command);
 
-	String getBotToken();
+    String getBotToken();
 
-	String getBotName();
+    String getBotName();
 
-	Map<String, CallbackQueryHandler> getCallbackQueries();
+    Map<String, CallbackQueryHandler> getCallbackQueries();
 
-	Map<String, CommandHandler> getCommands();
+    Map<String, CommandHandler> getCommands();
 
-	Map<Long, String> getPendingReplies();
+    Map<Long, String> getPendingReplies();
 
-	TelegramClient getTelegramClient();
+    TelegramClient getTelegramClient();
 
-	Object getBean();
+    Object getBean();
 
 }
